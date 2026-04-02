@@ -56,5 +56,4 @@ class SessionStore:
             session.status.total_comments = result.total_comments
             session.status.progress = 100
             session.status.status = "done"
-            session.status.error = None
             return session
