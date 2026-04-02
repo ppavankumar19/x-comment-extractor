@@ -36,7 +36,8 @@ def _comment_to_markdown(comment: Comment, level: int) -> list[str]:
     lines = [
         f"{prefix} Comment #{comment.index}",
         "",
-        f"- Author: @{comment.author.username} ({comment.author.display_name})",
+        f"- Author: [@{comment.author.username}](https://x.com/{comment.author.username}) — **{comment.author.display_name}**"
+        + (" ✓ Verified" if comment.author.verified else ""),
         f"- Timestamp: {_format_dt(comment.timestamp)}",
         f"- Likes: {comment.like_count}",
         f"- Retweets: {comment.retweet_count}",
@@ -47,8 +48,30 @@ def _comment_to_markdown(comment: Comment, level: int) -> list[str]:
         "",
     ]
 
+    if comment.mentions:
+        lines.append(f"**Mentions:** {', '.join(f'[@{m}](https://x.com/{m})' for m in comment.mentions)}")
+        lines.append("")
+
+    if comment.hashtags:
+        lines.append(f"**Hashtags:** {', '.join(f'#{tag}' for tag in comment.hashtags)}")
+        lines.append("")
+
+    if comment.emails:
+        lines.append("**Emails found:**")
+        lines.append("")
+        for email in comment.emails:
+            lines.append(f"- `{email}`")
+        lines.append("")
+
+    if comment.links:
+        lines.append("**Links found in text:**")
+        lines.append("")
+        for link in comment.links:
+            lines.append(f"- {link}")
+        lines.append("")
+
     if comment.resources:
-        lines.append("**Resources**")
+        lines.append("**Resources:**")
         lines.append("")
         for resource in comment.resources:
             lines.append(f"- `{resource.type}` {resource.url}")

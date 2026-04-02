@@ -41,6 +41,8 @@ class Comment(BaseModel):
     text_html: str = ""
     hashtags: list[str] = Field(default_factory=list)
     mentions: list[str] = Field(default_factory=list)
+    emails: list[str] = Field(default_factory=list)
+    links: list[str] = Field(default_factory=list)
     timestamp: datetime | None = None
     like_count: int = 0
     retweet_count: int = 0
