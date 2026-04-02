@@ -36,7 +36,7 @@ The project runs entirely as a **web application** (FastAPI backend + HTML/JS fr
 |---|---|
 | **Frontend** | HTML5, Tailwind CSS, Vanilla JS (or optionally React) |
 | **Backend** | Python 3.11+, FastAPI, Uvicorn |
-| **Scraping** | Playwright (headless Chromium), Tweepy (Twitter API v2 optional) |
+| **Scraping** | Playwright (headless Chromium) |
 | **LLM — Cloud** | NVIDIA API (`nvidia/nemotron-3-super-120b-a12b`) |
 | **Data** | Pydantic models, JSON |
 | **Export** | JSON, Markdown |
@@ -123,6 +123,7 @@ x-comment-extractor/
 │   ├── main.py                # FastAPI app entry point
 │   ├── routes/
 │   │   ├── extract.py         # POST /extract endpoint
+│   │   ├── status.py          # GET /status and /results endpoints
 │   │   └── export.py          # GET /export endpoint
 │   ├── services/
 │   │   ├── scraper.py         # Playwright-based X scraper
@@ -179,11 +180,19 @@ x-comment-extractor/
 
 ```bash
 # JSON
-GET /export?format=json&session_id=<id>
+GET /export/{session_id}?format=json
 
 # Markdown
-GET /export?format=markdown&session_id=<id>
+GET /export/{session_id}?format=markdown
 ```
+
+---
+
+## 🔒 Security
+
+- **Never commit your `.env` file** — it contains credentials (`X_AUTH_TOKEN`, `X_CT0`, `NVIDIA_API_KEY`). The `.gitignore` excludes it; keep it that way.
+- If you accidentally expose X auth tokens, revoke them immediately at [x.com/settings/security](https://x.com/settings/security).
+- Use `.env.example` as a template and fill in real values only in your local `.env`.
 
 ---
 
