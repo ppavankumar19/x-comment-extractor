@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import html as html_module
 import os
 import re
 from collections.abc import Awaitable, Callable
@@ -240,8 +241,11 @@ class XScraper:
 
     def _build_comment(self, payload: dict[str, Any], index: int, include_replies: bool) -> Comment:
         resources = [CommentResource.model_validate(item) for item in payload.get("resources", [])]
-        hashtags = sorted({token for token in re.findall(r"#(\w+)", payload.get("text", ""))})
-        mentions = sorted({token for token in re.findall(r"@(\w+)", payload.get("text", ""))})
+        raw_text = payload.get("text", "")
+        hashtags = sorted({token for token in re.findall(r"#(\w+)", raw_text)})
+        mentions = sorted({token for token in re.findall(r"@(\w+)", raw_text)})
+        emails = sorted({m.lower() for m in _EMAIL_RE.findall(raw_text)})
+        links = sorted({m for m in _URL_RE.findall(raw_text)})
         replies: list[Comment] = []
         if include_replies:
             for reply_payload in payload.get("replies", []):
@@ -251,10 +255,12 @@ class XScraper:
             index=index,
             comment_id=payload["comment_id"],
             author=self._build_author(payload),
-            text=payload.get("text", ""),
-            text_html=payload.get("text_html", ""),
+            text=raw_text,
+            text_html=_build_rich_html(raw_text),
             hashtags=hashtags,
             mentions=mentions,
+            emails=emails,
+            links=links,
             timestamp=self._parse_timestamp(payload.get("timestamp")),
             like_count=parse_count(payload.get("like_count")),
             retweet_count=parse_count(payload.get("retweet_count")),
@@ -281,6 +287,61 @@ class XScraper:
             return datetime.fromisoformat(value.replace("Z", "+00:00")).astimezone(timezone.utc)
         except ValueError:
             return None
+
+
+# ---------------------------------------------------------------------------
+# Inline-entity regexes
+# ---------------------------------------------------------------------------
+
+_EMAIL_RE = re.compile(
+    r"\b[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}\b"
+)
+
+_URL_RE = re.compile(
+    r"https?://[^\s<>\"')\]]+",
+    re.IGNORECASE,
+)
+
+# Combined pattern — order matters: URLs first (greedy), then emails, then
+# hashtags, then @mentions, so email addresses aren't split at the @.
+_INLINE_RE = re.compile(
+    r"(https?://[^\s<>\"')\]]+)"              # group 1: URL
+    r"|(\b[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}\b)"  # group 2: email
+    r"|(#\w+)"                                # group 3: hashtag
+    r"|(@\w+)",                               # group 4: @mention
+    re.IGNORECASE,
+)
+
+
+def _build_rich_html(text: str) -> str:
+    """Return an HTML string where @mentions, emails, hashtags and URLs are
+    wrapped in styled, safe spans/anchors.  Plain text segments are
+    HTML-escaped before insertion."""
+    parts: list[str] = []
+    cursor = 0
+    for match in _INLINE_RE.finditer(text):
+        # Escape the plain text that precedes this match
+        parts.append(html_module.escape(text[cursor : match.start()]))
+        raw = match.group(0)
+        if match.group(1):  # URL
+            safe_url = html_module.escape(raw, quote=True)
+            parts.append(
+                f'<a class="url-link" href="{safe_url}" target="_blank" rel="noreferrer">'
+                f"{html_module.escape(raw)}</a>"
+            )
+        elif match.group(2):  # email
+            parts.append(f'<span class="email">{html_module.escape(raw)}</span>')
+        elif match.group(3):  # hashtag
+            parts.append(f'<span class="hashtag">{html_module.escape(raw)}</span>')
+        elif match.group(4):  # @mention
+            username = html_module.escape(raw[1:], quote=True)  # strip leading @
+            parts.append(
+                f'<a class="mention" href="https://x.com/{username}" '
+                f'target="_blank" rel="noreferrer">{html_module.escape(raw)}</a>'
+            )
+        cursor = match.end()
+    parts.append(html_module.escape(text[cursor:]))
+    return "".join(parts)
 
 
 EXTRACT_ARTICLES_SCRIPT = """

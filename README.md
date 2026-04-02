@@ -23,9 +23,15 @@ The project runs entirely as a **web application** (FastAPI backend + HTML/JS fr
 - 🖼️ **Media extraction** — images, videos, GIFs, and card thumbnails per comment
 - 🔤 **Full text extraction** — hashtags, mentions, emojis preserved
 - 🔗 **Link resolution** — expands t.co short-links to real URLs
+- 🎨 **Inline highlighting** — @mentions (blue, clickable), email addresses (amber), #hashtags (blue), URLs (underlined links) rendered directly inside each comment body
+- 👤 **Author highlighting** — username shown as a clickable blue X profile link; display name bolded; verified badge shown inline
+- 📧 **Email extraction** — all email addresses found in comment text surfaced as separate `emails` fields and shown as amber chips beneath the comment
+- 🔗 **Link extraction** — all URLs found in comment text surfaced as a separate `links` field and shown beneath the comment
+- 💬 **Mention chips** — every @mention listed as a blue chip panel below the comment body
 - 🤖 **Optional LLM annotation** — topic tags and summary per comment via NVIDIA
-- 🗂️ **Structured comment cards** — Comment #N → Author → Text → Resources (media / links)
-- 📤 **Export** to JSON or Markdown
+- 🗂️ **Structured comment cards** — Comment #N → Author → Text → Mentions / Emails / Links → Resources (media / links)
+- 🔍 **Keyword filter** — searches text, author username, display name, emails, and links
+- 📤 **Export** to JSON or Markdown (exports include mentions, emails, links, hashtags)
 - 🌐 **Web UI** — no CLI knowledge required
 
 ---
@@ -66,8 +72,8 @@ playwright install chromium
 git clone https://github.com/yourname/x-comment-extractor.git
 cd x-comment-extractor
 
-python -m venv venv
-source venv/bin/activate        # Windows: venv\Scripts\activate
+python -m venv .venv
+source .venv/bin/activate       # Windows: .venv\Scripts\activate
 
 pip install -r requirements.txt
 ```
@@ -98,10 +104,17 @@ X_CT0=
 ### 4. Run
 
 ```bash
-uvicorn app.main:app --reload --port 8000
+python -m uvicorn app.main:app --reload --port 8000
 ```
 
 Open your browser at `http://localhost:8000`
+
+If `uvicorn` or `python` resolves outside the virtual environment, you can hit `ModuleNotFoundError` for packages such as `fastapi`. Verify these commands point into `.venv` before starting the server:
+
+```bash
+which python
+which uvicorn
+```
 
 ---
 
@@ -134,9 +147,9 @@ x-comment-extractor/
 │   │   └── comment.py         # Pydantic data models
 │   └── config.py              # Settings from .env
 ├── frontend/
-│   ├── index.html             # Main web UI
-│   ├── style.css
-│   └── app.js
+│   ├── index.html             # Main web UI source
+│   ├── style.css              # Inlined into the served page at runtime
+│   └── app.js                 # Inlined into the served page at runtime
 ├── tests/
 │   ├── test_scraper.py
 │   └── test_llm_client.py
@@ -158,20 +171,27 @@ x-comment-extractor/
 5. Browse structured comment cards:
 
 ```
-┌─────────────────────────────────────────┐
-│ Comment #1                              │
-│ 👤 @username · John Doe                 │
-│ ─────────────────────────────────────── │
-│ 💬 "This is the comment text with       │
-│     #hashtags and @mentions"            │
-│ ─────────────────────────────────────── │
-│ 📎 Resources                            │
-│   🖼️ image1.jpg                         │
-│   🎥 video.mp4                          │
-│   🔗 https://example.com               │
-│ ─────────────────────────────────────── │
-│ 🤖 Sentiment: Positive | Tags: AI, Tech │
-└─────────────────────────────────────────┘
+┌────────────────────────────────────────────────┐
+│ Comment #1                                     │
+│ 👤 @username (blue link) · John Doe (bold)  ✓  │
+│ ─────────────────────────────────────────────  │
+│ 💬 "Check this out @alice and email me at      │
+│     hello@example.com — https://example.com   │
+│     #AI #Tech"                                 │
+│    ^blue link  ^amber chip  ^blue underline    │
+│    ^blue bold  ^blue bold                      │
+│ ─────────────────────────────────────────────  │
+│ mentions  @alice                               │
+│ emails    hello@example.com                    │
+│ links     https://example.com                  │
+│ ─────────────────────────────────────────────  │
+│ 📎 Resources                                   │
+│   🖼️ image1.jpg                                │
+│   🎥 video.mp4                                 │
+│   🔗 https://example.com                       │
+│ ─────────────────────────────────────────────  │
+│ 🤖 Sentiment: Positive | Tags: AI, Tech        │
+└────────────────────────────────────────────────┘
 ```
 
 ---
