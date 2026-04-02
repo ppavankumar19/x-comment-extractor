@@ -1,8 +1,8 @@
 # 🎯 SCOPE.md — X Post Comment Extractor Agent
 
-**Version:** 1.0.0  
-**Status:** Defined  
-**Last Updated:** 2025  
+**Version:** 1.0.0
+**Status:** Delivered
+**Last Updated:** 2026-04-02
 
 ---
 
@@ -125,35 +125,35 @@ Build an AI-powered web application that accepts a public X (Twitter) post URL a
 ## 7. Phased Delivery
 
 ### Phase 1 — MVP (Week 1–2)
-- [ ] FastAPI skeleton + `/extract` endpoint
-- [ ] Playwright scraper for text + basic author info
-- [ ] Simple web UI (URL input → raw JSON display)
-- [ ] `.env` config system
+- [x] FastAPI skeleton + `/extract` endpoint
+- [x] Playwright scraper for text + basic author info
+- [x] Simple web UI (URL input → raw JSON display)
+- [x] `.env` config system
 
 ### Phase 2 — Media & Resources (Week 3–4)
-- [ ] Image, video, GIF extraction
-- [ ] t.co link expansion
+- [x] Image, video, GIF extraction
+- [x] t.co link expansion
 - [ ] OG preview card fetching
 - [ ] Quote-tweet parsing
 - [ ] Poll parsing
 
 ### Phase 3 — LLM Annotation (Week 5)
-- [ ] Ollama client integration + annotation prompt
-- [ ] NVIDIA NIM client integration
-- [ ] Per-comment annotation pipeline
-- [ ] Toggle in UI
+- [ ] Ollama client integration + annotation prompt (deferred to v2)
+- [x] NVIDIA NIM client integration
+- [x] Per-comment annotation pipeline
+- [x] Toggle in UI
 
 ### Phase 4 — Polished UI & Export (Week 6)
-- [ ] Numbered comment cards with resource sections
+- [x] Numbered comment cards with resource sections
 - [ ] Image lightbox
-- [ ] Filter bar
-- [ ] JSON + Markdown export
-- [ ] Progress indicator
+- [x] Filter bar
+- [x] JSON + Markdown export
+- [x] Progress indicator
 
 ### Phase 5 — Testing & Docs (Week 7)
-- [ ] Unit tests for scraper + LLM client
-- [ ] Error handling hardening
-- [ ] Final README polish
+- [x] Unit tests for scraper + LLM client
+- [x] Error handling hardening
+- [x] Final README polish
 - [ ] Video walkthrough / demo
 
 ---
