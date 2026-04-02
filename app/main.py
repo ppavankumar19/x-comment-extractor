@@ -4,10 +4,10 @@ from pathlib import Path
 
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
 
 from app.config import get_settings
+from app.frontend import render_frontend
 from app.routes.export import build_router as build_export_router
 from app.routes.extract import build_router as build_extract_router
 from app.routes.status import build_router as build_status_router
@@ -32,12 +32,11 @@ app.add_middleware(
 app.include_router(build_extract_router(store, manager))
 app.include_router(build_status_router(store))
 app.include_router(build_export_router(store))
-app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 
 
 @app.get("/", include_in_schema=False)
-async def index() -> FileResponse:
-    return FileResponse(FRONTEND_DIR / "index.html")
+async def index() -> HTMLResponse:
+    return HTMLResponse(render_frontend(FRONTEND_DIR))
 
 
 @app.get("/favicon.ico", include_in_schema=False)
