@@ -1,6 +1,9 @@
 .venv/
+venv/
 .pytest_cache/
 __pycache__/
 *.pyc
 .env
+.codex
+.claude/
 playwright/storage_state.json
