@@ -1,8 +1,8 @@
 # 📐 SPECIFICATION.md — X Post Comment Extractor Agent
 
-**Version:** 1.0.0  
-**Status:** Draft  
-**Last Updated:** 2025  
+**Version:** 1.0.0
+**Status:** Implemented
+**Last Updated:** 2026-04-02
 
 ---
 
@@ -208,7 +208,9 @@ Returns downloadable file with `Content-Disposition` header.
 
 ## 5. LLM Integration Specification
 
-### 5.1 Ollama Client
+### 5.1 Ollama Client (Not implemented in v1)
+
+> **Note:** Ollama integration is specified here for future reference but is **not implemented in v1**. Only the NVIDIA backend is available. Sending `llm_backend=ollama` returns HTTP 422.
 
 ```python
 # Endpoint: POST http://localhost:11434/api/chat
