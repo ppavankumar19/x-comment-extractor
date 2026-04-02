@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>X Comment Extractor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <p class="eyebrow">Public X thread extraction</p>
+        <h1>Extract replies, media, links, and NVIDIA-backed annotations.</h1>
+        <p class="lede">
+          Paste a public X post URL, run the Playwright scraper, and review structured comment cards in the browser.
+        </p>
+      </section>
+
+      <section class="panel">
+        <form id="extract-form" class="form">
+          <label class="field">
+            <span>X post URL</span>
+            <input id="url" name="url" type="url" placeholder="https://x.com/user/status/1234567890" required />
+          </label>
+
+          <div class="grid">
+            <label class="field">
+              <span>Max comments</span>
+              <input id="max-comments" name="max_comments" type="number" min="1" max="500" value="50" />
+            </label>
+            <label class="field">
+              <span>LLM backend</span>
+              <select id="llm-backend" name="llm_backend">
+                <option value="nvidia">NVIDIA API</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="toggles">
+            <label><input id="include-replies" name="include_replies" type="checkbox" checked /> Include nested replies</label>
+            <label><input id="llm-annotate" name="llm_annotate" type="checkbox" /> Run NVIDIA annotation</label>
+          </div>
+
+          <button id="submit" class="button" type="submit">Extract Comments</button>
+        </form>
+      </section>
+
+      <section class="panel status-panel">
+        <div class="status-row">
+          <div>
+            <p class="status-label">Status</p>
+            <p id="status-text" class="status-value">Idle</p>
+          </div>
+          <div>
+            <p class="status-label">Progress</p>
+            <p id="progress-text" class="status-value">0%</p>
+          </div>
+          <div>
+            <p class="status-label">Comments</p>
+            <p id="comments-text" class="status-value">0</p>
+          </div>
+        </div>
+        <div class="progress-track"><div id="progress-bar" class="progress-bar"></div></div>
+        <p id="status-error" class="error"></p>
+      </section>
+
+      <section id="controls" class="panel hidden">
+        <div class="controls">
+          <label class="field compact">
+            <span>Keyword filter</span>
+            <input id="filter-keyword" type="text" placeholder="search text or author" />
+          </label>
+          <div class="export-actions">
+            <button id="export-json" class="button ghost" type="button">Export JSON</button>
+            <button id="export-markdown" class="button ghost" type="button">Export Markdown</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="results" class="results"></section>
+    </main>
+    <script src="/static/app.js" defer></script>
+  </body>
+</html>
