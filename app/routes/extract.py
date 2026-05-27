@@ -10,10 +10,9 @@ from app.services.extraction import ExtractionManager
 from app.services.scraper import validate_x_url
 from app.services.session_store import SessionStore
 
-router = APIRouter(tags=["extract"])
-
-
 def build_router(store: SessionStore, manager: ExtractionManager) -> APIRouter:
+    router = APIRouter(tags=["extract"])
+
     @router.post("/extract")
     async def start_extraction(request: ExtractRequest) -> dict[str, str]:
         if request.llm_backend.lower() != "nvidia":
