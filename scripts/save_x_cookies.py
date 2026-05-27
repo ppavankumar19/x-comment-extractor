@@ -45,6 +45,10 @@ def main() -> None:
     auth_token = input("Paste your X auth_token cookie value: ").strip()
     ct0 = input("Paste your X ct0 cookie value: ").strip()
 
+    if not auth_token or not ct0:
+        print("Error: both auth_token and ct0 are required. Aborting.")
+        return
+
     storage_state = build_storage_state(auth_token, ct0)
     path.write_text(json.dumps(storage_state, indent=2), encoding="utf-8")
     print(f"Saved X cookie session to {path}")
