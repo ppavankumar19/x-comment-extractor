@@ -70,7 +70,6 @@ class ExtractRequest(BaseModel):
     include_replies: bool = True
     llm_annotate: bool = False
     llm_backend: str = "nvidia"
-    export_format: str = "json"
 
 
 class SessionStatus(BaseModel):
