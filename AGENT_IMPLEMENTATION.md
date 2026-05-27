@@ -1,7 +1,7 @@
 # Agent Implementation Notes
 
 **Status:** design draft only, not implemented in this repository  
-**Last Updated:** 2026-04-02
+**Last Updated:** 2026-05-27
 
 ## Current State
 
@@ -11,10 +11,10 @@ The repository ships a form-driven FastAPI web app. It does not currently expose
 
 An agent layer could reuse the existing services directly:
 
-- URL validation from [app/services/scraper.py](/home/pavankumar19/x-comment-extractor/app/services/scraper.py)
-- extraction orchestration from [app/services/extraction.py](/home/pavankumar19/x-comment-extractor/app/services/extraction.py)
-- session lifecycle from [app/services/session_store.py](/home/pavankumar19/x-comment-extractor/app/services/session_store.py)
-- export helpers from [app/services/exporter.py](/home/pavankumar19/x-comment-extractor/app/services/exporter.py)
+- URL validation from [app/services/scraper.py](app/services/scraper.py)
+- extraction orchestration from [app/services/extraction.py](app/services/extraction.py)
+- session lifecycle from [app/services/session_store.py](app/services/session_store.py)
+- export helpers from [app/services/exporter.py](app/services/exporter.py)
 
 ## Minimal Agent Surface
 

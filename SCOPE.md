@@ -1,7 +1,7 @@
 # Scope
 
 **Status:** current implemented scope  
-**Last Updated:** 2026-04-02
+**Last Updated:** 2026-05-27
 
 ## In Scope
 

@@ -1,7 +1,7 @@
 # Specification
 
 **Status:** implemented repository snapshot  
-**Last Updated:** 2026-04-02
+**Last Updated:** 2026-05-27
 
 ## Architecture
 
@@ -48,7 +48,7 @@ Behavioral constraints:
 
 ## Result Model
 
-The main persisted object is `ExtractionResult` in [app/models/comment.py](/home/pavankumar19/x-comment-extractor/app/models/comment.py).
+The main persisted object is `ExtractionResult` in [app/models/comment.py](app/models/comment.py).
 
 Top-level fields:
 
