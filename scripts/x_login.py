@@ -14,19 +14,7 @@ os.environ.setdefault("PLAYWRIGHT_BROWSERS_PATH", "0")
 from playwright.async_api import async_playwright
 
 from app.config import get_settings
-
-STEALTH_INIT_SCRIPT = """
-Object.defineProperty(navigator, 'webdriver', {
-  get: () => undefined,
-});
-window.chrome = window.chrome || { runtime: {} };
-Object.defineProperty(navigator, 'languages', {
-  get: () => ['en-US', 'en'],
-});
-Object.defineProperty(navigator, 'plugins', {
-  get: () => [1, 2, 3, 4, 5],
-});
-"""
+from app.services.scraper import STEALTH_INIT_SCRIPT
 
 
 async def main() -> None:
